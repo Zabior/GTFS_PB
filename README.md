@@ -1,6 +1,6 @@
 # gtfspb
 
-Package to decode GTFS-RT .pb (Protocol Buffers) files <b>In development</b>
+Package to handle with GTFS-RT .pb (Protocol Buffers) files <b>In development</b>
 
 ## Getting Started
 
