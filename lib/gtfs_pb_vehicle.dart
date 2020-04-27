@@ -5,8 +5,6 @@ import 'dart:io';
 
 import 'package:gtfs_pb/proto/gtfs-realtime.pb.dart';
 
-//TODO: Make todo for this class
-
 // Class for vehicles_position.pb files
 class GtfsPbVehicle extends GtfsPb {
   // Insert your vehicle_position.pb file as an argument
@@ -27,14 +25,23 @@ class GtfsPbVehicle extends GtfsPb {
   // Returns single vehicle data using search by tripId
   // If vehicle is not found returns empty FeedEntity
   VehiclePosition getVehicleDataByTripId(String tripId) => message.entity
-          .firstWhere((entity) => entity.vehicle.trip.tripId == tripId,
-              orElse: () => FeedEntity()).vehicle;
+      .firstWhere((entity) => entity.vehicle.trip.tripId == tripId,
+          orElse: () => FeedEntity())
+      .vehicle;
 
   // Returns single vehicle data using search by vehicleId
   // If vehicle is not found returns FeedEntity
   VehiclePosition getVehicleDataByVehicleId(String vehicleId) => message.entity
-          .firstWhere((entity) => entity.vehicle.vehicle.id == vehicleId,
-              orElse: () => FeedEntity()).vehicle;
+      .firstWhere((entity) => entity.vehicle.vehicle.id == vehicleId,
+          orElse: () => FeedEntity())
+      .vehicle;
+
+  // Returns single vehicle data using search by vehicleLabel
+  // If vehicle is not found returns FeedEntity
+  VehiclePosition getVehicleDataByVehicleLabel(String label) => message.entity
+      .firstWhere((entity) => entity.vehicle.vehicle.label == label,
+          orElse: () => FeedEntity())
+      .vehicle;
 
   // Returns list of vehicle data using search by routeId
   // If vehicles were not found returns empty list
@@ -63,5 +70,13 @@ class GtfsPbVehicle extends GtfsPb {
       }
     }
     return vehicles;
+  }
+
+  // Filter your message to reduce it to only one startDate
+  filterFeedByStartDate(String startDate) {
+    for (FeedEntity entity in message.entity) {
+      if (startDate != entity.vehicle.trip.startDate)
+        message.entity.remove(entity);
+    }
   }
 }

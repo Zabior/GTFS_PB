@@ -7,7 +7,6 @@ import 'proto/gtfs-realtime.pb.dart';
 import 'dart:io';
 
 // TODO: GtfsPbAlert class
-// TODO: Constructor there and in subclasses with argument as ready message
 
 // If you want to get specified info for trip_updates.pb, vehicles_position.pb
 // or alerts.pb use subclasses GtfsPbTrip, GtfsPbVehicle or GtfsPbAlert

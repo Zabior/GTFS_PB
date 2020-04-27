@@ -23,20 +23,27 @@ class GtfsPbTrip extends GtfsPb {
   }
 
   // Returns single TripUpdate for specified tripId
-  // If trip is not found returns empty FeedEntity
+  // If trip is not found returns empty TripUpdate
   TripUpdate getTripByTripId(String tripId) => message.entity
       .firstWhere((entity) => entity.tripUpdate.trip.tripId == tripId,
           orElse: () => FeedEntity())
       .tripUpdate;
 
-  // Returns single trip data using search by vehicleId
-  // If trip is not found returns FeedEntity
+  // Returns single TripUpdate using search by vehicleId
+  // If trip is not found returns empty TripUpdate
   TripUpdate getTripUpdateByVehicleId(String vehicleId) => message.entity
       .firstWhere((entity) => entity.tripUpdate.vehicle.id == vehicleId,
           orElse: () => FeedEntity())
       .tripUpdate;
 
-  // Returns list of trip data using search by routeId
+  // Returns single TripUpdate using search by vehicleLabel
+  // If trip is not found returns empty TripUpdate
+  TripUpdate getTripUpdateByVehicleLabel(String label) => message.entity
+      .firstWhere((entity) => entity.tripUpdate.vehicle.label == label,
+          orElse: () => FeedEntity())
+      .tripUpdate;
+
+  // Returns list of TripUpdate using search by routeId
   // If trips were not found returns empty list
   List<TripUpdate> getTripsDataByRouteId(String routeId) {
     List<TripUpdate> trips = List();
@@ -47,13 +54,48 @@ class GtfsPbTrip extends GtfsPb {
     return trips;
   }
 
+  // Returns list of TripUpdate which have chosen stopId in one of stopTimeUpdates
+  // If trips were not found returns empty list
+  List<TripUpdate> getTripsDataByStopId(String stopId) {
+    List<TripUpdate> trips = List();
+    for (FeedEntity entity in message.entity) {
+      for (TripUpdate_StopTimeUpdate stopTimeUpdate
+          in entity.tripUpdate.stopTimeUpdate) {
+        if (stopTimeUpdate.stopId == stopId) {
+          trips.add(entity.tripUpdate);
+          break;
+        }
+      }
+    }
+    return trips;
+  }
+
+  // Returns single StopTimeUpdate for specified tripId and either stopId or stopSequence
+  // If nothing was found return empty StopTimeUpdate
+  // You have to specify stopId or stopSequence - if not returns null
+  TripUpdate_StopTimeUpdate getSingleStopTimeUpdate(String tripId,
+      {String stopId, int stopSequence}) {
+    TripUpdate trip = getTripByTripId(tripId);
+    if (stopId != null) {
+      return trip.stopTimeUpdate.firstWhere((update) => update.stopId == stopId,
+          orElse: () => TripUpdate_StopTimeUpdate());
+    } else if (stopSequence != null) {
+      return trip.stopTimeUpdate.firstWhere(
+          (update) => update.stopSequence == stopSequence,
+          orElse: () => TripUpdate_StopTimeUpdate());
+    } else {
+      print('You have to specify stopId or stopSequence');
+      return null;
+    }
+  }
+
   // Returns list of all delayed trips
   // If trips were not found returns empty list
   List<TripUpdate> get allDelayedTrips {
     List<TripUpdate> trips = List();
     for (FeedEntity entity in message.entity) {
       for (TripUpdate_StopTimeUpdate stopTimeUpdate
-      in entity.tripUpdate.stopTimeUpdate) {
+          in entity.tripUpdate.stopTimeUpdate) {
         if (stopTimeUpdate.arrival.delay > 0 ||
             stopTimeUpdate.departure.delay > 0) {
           trips.add(entity.tripUpdate);
@@ -81,8 +123,11 @@ class GtfsPbTrip extends GtfsPb {
     return trips;
   }
 
-  // TODO: Search by stopId in stopTimeUpdate
-  // TODO: Search by vehicle label
-  // TODO: Search for concrete stopTimeUpdate by specifying tripId and StopId or StopSequence
-  // TODO: Filter results for startDate
+  // Filter your message to reduce it to only one startDate
+  filterFeedByStartDate(String startDate) {
+    for (FeedEntity entity in message.entity) {
+      if (startDate != entity.vehicle.trip.startDate)
+        message.entity.remove(entity);
+    }
+  }
 }
