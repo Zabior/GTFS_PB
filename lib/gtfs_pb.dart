@@ -6,6 +6,10 @@ import 'proto/gtfs-realtime.pb.dart';
 
 import 'dart:io';
 
+export 'gtfs_pb_alert.dart';
+export 'gtfs_pb_trip.dart';
+export 'gtfs_pb_vehicle.dart';
+
 // TODO: GtfsPbAlert class
 
 // If you want to get specified info for trip_updates.pb, vehicles_position.pb

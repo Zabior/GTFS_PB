@@ -15,7 +15,7 @@ class GtfsPbTrip extends GtfsPb {
   // Insert your trip_update.pb file as an argument
   GtfsPbTrip.fromFile(File file) : super.fromFile(file);
 
-  // Returns List with all TripUpdates from trip_updates.pb
+  // Returns List with all TripUpdates
   List<TripUpdate> get allTrips {
     List<TripUpdate> trips = List();
     for (FeedEntity entity in message.entity) trips.add(entity.tripUpdate);
