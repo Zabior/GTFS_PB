@@ -1,17 +1,10 @@
 name: gtfs_pb
 description: Package to handle with GTFS-RT .pb (Protocol Buffers) files
-version: 0.0.1
+version: 0.0.2-nullsafety.0
 homepage: https://github.com/Zabior/gtfs_pb
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=2.12.0-29.10.beta <3.0.0'
 
 dependencies:
-  flutter:
-    sdk: flutter
-  protobuf: ^1.0.1
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
+  protobuf: ^2.0.0-nullsafety.0

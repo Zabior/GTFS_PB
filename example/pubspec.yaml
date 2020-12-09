@@ -1,0 +1,7 @@
+name: example
+
+dependencies:
+  gtfs_pb:
+    git:
+      name: gtfs_pb
+      url: https://github.com/Zabior/gtfs_pb
